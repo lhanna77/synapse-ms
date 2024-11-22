@@ -102,7 +102,7 @@
 					"name": "dp-203-azure-data-engineer"
 				},
 				"content": {
-					"query": "USE Sales;\nGO;\n\nCREATE EXTERNAL TABLE ProductSalesTotals\n    WITH (\n        LOCATION = 'sales/productsales/',\n        DATA_SOURCE = sales_data,\n        FILE_FORMAT = ParquetFormat\n    )\nAS\nSELECT Item AS Product,\n    SUM(Quantity) AS ItemsSold,\n    ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n    BULK 'https://datalake7hkutdz.dfs.core.windows.net/files/sales/csv/*.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE\n    ) AS [orders]\nGROUP BY Item;",
+					"query": "USE Sales;\nGO;\n\nCREATE EXTERNAL TABLE dbo.ProductSalesTotals\n    WITH (\n        LOCATION = 'sales/productsales/',\n        DATA_SOURCE = sales_data,\n        FILE_FORMAT = ParquetFormat\n    )\nAS\nSELECT Item AS Product,\n    SUM(Quantity) AS ItemsSold,\n    ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n    BULK 'https://datalake7hkutdz.dfs.core.windows.net/files/sales/csv/2021.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE\n    ) AS [orders]\nGROUP BY Item;",
 					"metadata": {
 						"language": "sql"
 					},
@@ -126,6 +126,29 @@
 				},
 				"content": {
 					"query": " -- Database for sales data\n CREATE DATABASE Sales\n GO;\n    \n Use Sales;\n GO;\n    \n -- External data is in the Files container in the data lake\n CREATE EXTERNAL DATA SOURCE sales_data WITH (\n     LOCATION = 'https://datalake7hkutdz.dfs.core.windows.net/files/'\n );\n GO;\n\n -- Format for table files\n CREATE EXTERNAL FILE FORMAT ParquetFormat\n     WITH (\n             FORMAT_TYPE = PARQUET,\n             DATA_COMPRESSION = 'org.apache.hadoop.io.compress.SnappyCodec'\n         );\n GO;",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Sales",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/sp_GetYearlySales')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"folder": {
+					"name": "dp-203-azure-data-engineer"
+				},
+				"content": {
+					"query": "USE Sales;\nGO;\n\nCREATE PROCEDURE sp_GetYearlySales\nAS\nBEGIN\n    -- drop existing table\n    IF EXISTS (\n            SELECT * FROM sys.external_tables\n            WHERE name = 'YearlySalesTotals'\n        )\n        DROP EXTERNAL TABLE YearlySalesTotals\n    \n    -- create external table\n    CREATE EXTERNAL TABLE YearlySalesTotals\n    WITH (\n            LOCATION = 'sales/yearlysales/',\n            DATA_SOURCE = sales_data,\n            FILE_FORMAT = ParquetFormat\n        )\n    AS\n    SELECT YEAR(OrderDate) AS CalendarYear,\n            SUM(Quantity) AS ItemsSold,\n            ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\n    FROM\n        OPENROWSET(\n            BULK 'https://datalake7hkutdz.dfs.core.windows.net/files/sales/csv/*.csv',\n            FORMAT = 'CSV',\n            PARSER_VERSION = '2.0',\n            HEADER_ROW = TRUE\n        ) AS orders\n    GROUP BY YEAR(OrderDate)\nEND",
 					"metadata": {
 						"language": "sql"
 					},
