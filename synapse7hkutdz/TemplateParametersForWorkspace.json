@@ -8,6 +8,9 @@
 		"synapse7hkutdz-WorkspaceDefaultSqlServer_connectionString": {
 			"value": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:synapse7hkutdz.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
 		},
+		"Http_Product_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/MicrosoftLearning/dp-203-azure-data-engineer/master/Allfiles/labs/01/adventureworks/products.csv"
+		},
 		"synapse7hkutdz-WorkspaceDefaultStorage_properties_typeProperties_url": {
 			"value": "https://datalake7hkutdz.dfs.core.windows.net"
 		}
