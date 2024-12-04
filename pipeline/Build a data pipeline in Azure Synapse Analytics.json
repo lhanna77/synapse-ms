@@ -23,7 +23,8 @@
 						"linkedService": {
 							"referenceName": "synapse7hkutdz-WorkspaceDefaultStorage",
 							"type": "LinkedServiceReference"
-						}
+						},
+						"folderPath": "files/10/staging"
 					},
 					"compute": {
 						"coreCount": 8,
