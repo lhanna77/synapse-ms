@@ -1,0 +1,117 @@
+{
+	"name": "LoadProductsData",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Products_Csv",
+						"type": "DatasetReference"
+					},
+					"name": "ProductsText"
+				},
+				{
+					"dataset": {
+						"referenceName": "DimProductCsv",
+						"type": "DatasetReference"
+					},
+					"name": "ProductTable"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsTable1",
+						"type": "DatasetReference"
+					},
+					"name": "DimProductTable",
+					"description": "Load DimProduct table"
+				}
+			],
+			"transformations": [
+				{
+					"name": "MatchedProducts",
+					"description": "Matched product data"
+				},
+				{
+					"name": "SetLoadAction",
+					"description": "Insert new, upsert existing"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Color as string,",
+				"          Size as string,",
+				"          ListPrice as decimal(10,0),",
+				"          Discontinued as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ProductsText",
+				"source(output(",
+				"          ProductKey as integer,",
+				"          ProductAlternateKey as string,",
+				"          ProductSubcategoryKey as string,",
+				"          WeightUnitMeasureCode as string,",
+				"          SizeUnitMeasureCode as string,",
+				"          EnglishProductName as string,",
+				"          SpanishProductName as string,",
+				"          FrenchProductName as string,",
+				"          StandardCost as string,",
+				"          FinishedGoodsFlag as string,",
+				"          Color as string,",
+				"          SafetyStockLevel as string,",
+				"          ReorderPoint as string,",
+				"          ListPrice as decimal(10,0),",
+				"          Size as string,",
+				"          SizeRange as string,",
+				"          Weight as string,",
+				"          DaysToManufacture as string,",
+				"          ProductLine as string,",
+				"          DealerPrice as string,",
+				"          Class as string,",
+				"          Style as string,",
+				"          ModelName as string,",
+				"          LargePhoto as string,",
+				"          EnglishDescription as string,",
+				"          FrenchDescription as string,",
+				"          ChineseDescription as string,",
+				"          ArabicDescription as string,",
+				"          HebrewDescription as string,",
+				"          ThaiDescription as string,",
+				"          GermanDescription as string,",
+				"          JapaneseDescription as string,",
+				"          TurkishDescription as string,",
+				"          StartDate as string,",
+				"          EndDate as string,",
+				"          Status as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> ProductTable",
+				"ProductsText, ProductTable lookup(ProductID == ProductAlternateKey,",
+				"     multiple: false,",
+				"     pickup: 'last',",
+				"     asc(ProductKey, true),",
+				"     broadcast: 'auto')~> MatchedProducts",
+				"MatchedProducts alterRow(insertIf(isNull(ProductKey)),",
+				"     updateIf(not(isNull(ProductKey)))) ~> SetLoadAction",
+				"SetLoadAction sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> DimProductTable"
+			]
+		}
+	}
+}
