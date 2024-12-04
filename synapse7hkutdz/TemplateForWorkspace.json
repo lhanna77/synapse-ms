@@ -26,6 +26,319 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('workspaceName'), '/Apache')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Build a data pipeline in Azure Synapse Analytics')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "LoadProductsData",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"ProductsText": {},
+									"ProductTable": {},
+									"DimProductTable": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "synapse7hkutdz-WorkspaceDefaultStorage",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "files/10/staging"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/dataflows/LoadProductsData')]",
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]",
+				"[concat(variables('workspaceId'), '/linkedServices/synapse7hkutdz-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureSynapseAnalyticsTable1')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapse7hkutdz-WorkspaceDefaultSqlServer",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimProductTable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapse7hkutdz-WorkspaceDefaultSqlServer')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/DimProductCsv')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapse7hkutdz-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "DimProduct.csv",
+						"folderPath": "01",
+						"fileSystem": "files"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ProductKey",
+						"type": "String"
+					},
+					{
+						"name": "ProductAlternateKey",
+						"type": "String"
+					},
+					{
+						"name": "ProductSubcategoryKey",
+						"type": "String"
+					},
+					{
+						"name": "WeightUnitMeasureCode",
+						"type": "String"
+					},
+					{
+						"name": "SizeUnitMeasureCode",
+						"type": "String"
+					},
+					{
+						"name": "EnglishProductName",
+						"type": "String"
+					},
+					{
+						"name": "SpanishProductName",
+						"type": "String"
+					},
+					{
+						"name": "FrenchProductName",
+						"type": "String"
+					},
+					{
+						"name": "StandardCost",
+						"type": "String"
+					},
+					{
+						"name": "FinishedGoodsFlag",
+						"type": "String"
+					},
+					{
+						"name": "Color",
+						"type": "String"
+					},
+					{
+						"name": "SafetyStockLevel",
+						"type": "String"
+					},
+					{
+						"name": "ReorderPoint",
+						"type": "String"
+					},
+					{
+						"name": "ListPrice",
+						"type": "String"
+					},
+					{
+						"name": "Size",
+						"type": "String"
+					},
+					{
+						"name": "SizeRange",
+						"type": "String"
+					},
+					{
+						"name": "Weight",
+						"type": "String"
+					},
+					{
+						"name": "DaysToManufacture",
+						"type": "String"
+					},
+					{
+						"name": "ProductLine",
+						"type": "String"
+					},
+					{
+						"name": "DealerPrice",
+						"type": "String"
+					},
+					{
+						"name": "Class",
+						"type": "String"
+					},
+					{
+						"name": "Style",
+						"type": "String"
+					},
+					{
+						"name": "ModelName",
+						"type": "String"
+					},
+					{
+						"name": "LargePhoto",
+						"type": "String"
+					},
+					{
+						"name": "EnglishDescription",
+						"type": "String"
+					},
+					{
+						"name": "FrenchDescription",
+						"type": "String"
+					},
+					{
+						"name": "ChineseDescription",
+						"type": "String"
+					},
+					{
+						"name": "ArabicDescription",
+						"type": "String"
+					},
+					{
+						"name": "HebrewDescription",
+						"type": "String"
+					},
+					{
+						"name": "ThaiDescription",
+						"type": "String"
+					},
+					{
+						"name": "GermanDescription",
+						"type": "String"
+					},
+					{
+						"name": "JapaneseDescription",
+						"type": "String"
+					},
+					{
+						"name": "TurkishDescription",
+						"type": "String"
+					},
+					{
+						"name": "StartDate",
+						"type": "String"
+					},
+					{
+						"name": "EndDate",
+						"type": "String"
+					},
+					{
+						"name": "Status",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapse7hkutdz-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Products_Csv')]",
+			"type": "Microsoft.Synapse/workspaces/datasets",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "synapse7hkutdz-WorkspaceDefaultStorage",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "Product.csv",
+						"folderPath": "10",
+						"fileSystem": "files"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ProductID",
+						"type": "String"
+					},
+					{
+						"name": "ProductName",
+						"type": "String"
+					},
+					{
+						"name": "Color",
+						"type": "String"
+					},
+					{
+						"name": "Size",
+						"type": "String"
+					},
+					{
+						"name": "ListPrice",
+						"type": "String"
+					},
+					{
+						"name": "Discontinued",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/linkedServices/synapse7hkutdz-WorkspaceDefaultStorage')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/Http_Product')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
@@ -110,6 +423,130 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/LoadProductsData')]",
+			"type": "Microsoft.Synapse/workspaces/dataflows",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Products_Csv",
+								"type": "DatasetReference"
+							},
+							"name": "ProductsText"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimProductCsv",
+								"type": "DatasetReference"
+							},
+							"name": "ProductTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSynapseAnalyticsTable1",
+								"type": "DatasetReference"
+							},
+							"name": "DimProductTable",
+							"description": "Load DimProduct table"
+						}
+					],
+					"transformations": [
+						{
+							"name": "MatchedProducts",
+							"description": "Matched product data"
+						},
+						{
+							"name": "SetLoadAction",
+							"description": "Insert new, upsert existing"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ProductID as string,",
+						"          ProductName as string,",
+						"          Color as string,",
+						"          Size as string,",
+						"          ListPrice as decimal(10,0),",
+						"          Discontinued as boolean",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> ProductsText",
+						"source(output(",
+						"          ProductKey as integer,",
+						"          ProductAlternateKey as string,",
+						"          ProductSubcategoryKey as string,",
+						"          WeightUnitMeasureCode as string,",
+						"          SizeUnitMeasureCode as string,",
+						"          EnglishProductName as string,",
+						"          SpanishProductName as string,",
+						"          FrenchProductName as string,",
+						"          StandardCost as string,",
+						"          FinishedGoodsFlag as string,",
+						"          Color as string,",
+						"          SafetyStockLevel as string,",
+						"          ReorderPoint as string,",
+						"          ListPrice as decimal(10,0),",
+						"          Size as string,",
+						"          SizeRange as string,",
+						"          Weight as string,",
+						"          DaysToManufacture as string,",
+						"          ProductLine as string,",
+						"          DealerPrice as string,",
+						"          Class as string,",
+						"          Style as string,",
+						"          ModelName as string,",
+						"          LargePhoto as string,",
+						"          EnglishDescription as string,",
+						"          FrenchDescription as string,",
+						"          ChineseDescription as string,",
+						"          ArabicDescription as string,",
+						"          HebrewDescription as string,",
+						"          ThaiDescription as string,",
+						"          GermanDescription as string,",
+						"          JapaneseDescription as string,",
+						"          TurkishDescription as string,",
+						"          StartDate as string,",
+						"          EndDate as string,",
+						"          Status as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false) ~> ProductTable",
+						"ProductsText, ProductTable lookup(ProductID == ProductAlternateKey,",
+						"     multiple: false,",
+						"     pickup: 'last',",
+						"     asc(ProductKey, true),",
+						"     broadcast: 'auto')~> MatchedProducts",
+						"MatchedProducts alterRow(insertIf(isNull(ProductKey)),",
+						"     updateIf(not(isNull(ProductKey)))) ~> SetLoadAction",
+						"SetLoadAction sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     staged: true,",
+						"     allowCopyCommand: true,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError') ~> DimProductTable"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/datasets/Products_Csv')]",
+				"[concat(variables('workspaceId'), '/datasets/DimProductCsv')]",
+				"[concat(variables('workspaceId'), '/datasets/AzureSynapseAnalyticsTable1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
 			"type": "Microsoft.Synapse/workspaces/credentials",
 			"apiVersion": "2019-06-01-preview",
@@ -174,7 +611,7 @@
 					"name": "LakeDb"
 				},
 				"content": {
-					"query": "USE RetailDB;\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
+					"query": "USE RetailDB;\n\n-- INSERT INTO RetailDB.SalesOrder VALUES (99999, CAST('2022-01-01' AS TimeStamp), 1, 6, 5, 1)\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
 					"metadata": {
 						"language": "sql"
 					},
@@ -280,6 +717,200 @@
 						"source": [
 							" %%sql\r\n",
 							" SELECT * FROM `RetailDB`.`SalesOrder` WHERE SalesOrderId = 99999"
+						],
+						"outputs": [],
+						"execution_count": null
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Spark Transform')]",
+			"type": "Microsoft.Synapse/workspaces/notebooks",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"nbformat": 4,
+				"nbformat_minor": 2,
+				"bigDataPool": {
+					"referenceName": "Apache",
+					"type": "BigDataPoolReference"
+				},
+				"sessionProperties": {
+					"driverMemory": "28g",
+					"driverCores": 4,
+					"executorMemory": "28g",
+					"executorCores": 4,
+					"numExecutors": 2,
+					"conf": {
+						"spark.dynamicAllocation.enabled": "false",
+						"spark.dynamicAllocation.minExecutors": "2",
+						"spark.dynamicAllocation.maxExecutors": "2",
+						"spark.autotune.trackingId": "dbf24ba3-cd5a-4c6e-8143-8aa3d92637e1"
+					}
+				},
+				"metadata": {
+					"saveOutput": true,
+					"enableDebugMode": false,
+					"kernelspec": {
+						"name": "synapse_pyspark",
+						"display_name": "Synapse PySpark"
+					},
+					"language_info": {
+						"name": "python"
+					},
+					"a365ComputeOptions": {
+						"id": "/subscriptions/05174b2b-36c5-447e-a3b3-c8f02ccb85dc/resourceGroups/dp203-7hkutdz/providers/Microsoft.Synapse/workspaces/synapse7hkutdz/bigDataPools/Apache",
+						"name": "Apache",
+						"type": "Spark",
+						"endpoint": "https://synapse7hkutdz.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/Apache",
+						"auth": {
+							"type": "AAD",
+							"authResource": "https://dev.azuresynapse.net"
+						},
+						"sparkVersion": "3.4",
+						"nodeCount": 3,
+						"cores": 4,
+						"memory": 28,
+						"automaticScaleJobs": false
+					},
+					"sessionKeepAliveTimeout": 30
+				},
+				"cells": [
+					{
+						"cell_type": "markdown",
+						"metadata": {},
+						"source": [
+							"# Transform data by using Spark\n",
+							"\n",
+							"This notebook transforms sales order data; converting it from CSV to Parquet format and splitting customer name into two separate fields.\n",
+							"\n",
+							"## Set variables"
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"tags": [
+								"parameters"
+							]
+						},
+						"source": [
+							"import uuid\r\n",
+							"\r\n",
+							"# Variable for unique folder name\r\n",
+							"folderName = uuid.uuid4()"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Load source data\r\n",
+							"\r\n",
+							"Let's start by loading some historical sales order data into a dataframe."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"collapsed": false
+						},
+						"source": [
+							"order_details = spark.read.csv('/data/*.csv', header=True, inferSchema=True)"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Transform the data structure\r\n",
+							"\r\n",
+							"The source data includes a **CustomerName** field, that contains the customer's first and last name. Modify the dataframe to separate this field into separate **FirstName** and **LastName** fields."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							},
+							"collapsed": false
+						},
+						"source": [
+							"from pyspark.sql.functions import split, col\r\n",
+							"\r\n",
+							"# Create the new FirstName and LastName fields\r\n",
+							"transformed_df = order_details.withColumn(\"FirstName\", split(col(\"CustomerName\"), \" \").getItem(0)).withColumn(\"LastName\", split(col(\"CustomerName\"), \" \").getItem(1))\r\n",
+							"\r\n",
+							"# Remove the CustomerName field\r\n",
+							"transformed_df = transformed_df.drop(\"CustomerName\")"
+						],
+						"outputs": [],
+						"execution_count": null
+					},
+					{
+						"cell_type": "markdown",
+						"metadata": {
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"## Save the transformed data\r\n",
+							"\r\n",
+							"Now save the transformed dataframe in Parquet format in a folder specified in a variable (Overwriting the data if it already exists)."
+						]
+					},
+					{
+						"cell_type": "code",
+						"metadata": {
+							"jupyter": {
+								"source_hidden": false,
+								"outputs_hidden": false
+							},
+							"nteract": {
+								"transient": {
+									"deleting": false
+								}
+							}
+						},
+						"source": [
+							"transformed_df.write.mode(\"overwrite\").parquet('/%s' % folderName)\r\n",
+							"print (\"Transformed data saved in %s!\" % folderName)"
 						],
 						"outputs": [],
 						"execution_count": null
@@ -815,6 +1446,93 @@
 				]
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Apache')]",
+			"type": "Microsoft.Synapse/workspaces/bigDataPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"autoPause": {
+					"enabled": true,
+					"delayInMinutes": 10
+				},
+				"autoScale": {
+					"enabled": false,
+					"maxNodeCount": 10,
+					"minNodeCount": 3
+				},
+				"nodeCount": 3,
+				"nodeSize": "Small",
+				"nodeSizeFamily": "MemoryOptimized",
+				"sparkVersion": "3.4",
+				"isComputeIsolationEnabled": false,
+				"sessionLevelPackagesEnabled": false,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "eastus2"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/dedicated')]",
+			"type": "Microsoft.Synapse/workspaces/sqlPools",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"collation": "SQL_Latin1_General_CP1_CI_AS",
+				"maxSizeBytes": 263882790666240,
+				"annotations": []
+			},
+			"dependsOn": [],
+			"location": "eastus2"
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/Run Spark Transform')]",
+			"type": "Microsoft.Synapse/workspaces/pipelines",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"activities": [
+					{
+						"name": "Spark Transform",
+						"type": "SynapseNotebook",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"notebook": {
+								"referenceName": "Spark Transform",
+								"type": "NotebookReference"
+							},
+							"parameters": {
+								"folderName": {
+									"value": "@pipeline().RunId",
+									"type": "string"
+								}
+							},
+							"snapshot": true,
+							"sparkPool": {
+								"referenceName": "Apache",
+								"type": "BigDataPoolReference"
+							},
+							"executorSize": "Small",
+							"conf": {},
+							"driverSize": "Small"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/notebooks/Spark Transform')]",
+				"[concat(variables('workspaceId'), '/bigDataPools/Apache')]"
+			]
 		}
 	]
 }
