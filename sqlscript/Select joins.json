@@ -5,7 +5,7 @@
 			"name": "LakeDb"
 		},
 		"content": {
-			"query": "USE RetailDB;\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
+			"query": "USE RetailDB;\n\n-- INSERT INTO RetailDB.SalesOrder VALUES (99999, CAST('2022-01-01' AS TimeStamp), 1, 6, 5, 1)\n\nSELECT o.SalesOrderID, c.EmailAddress, p.ProductName, o.Quantity\nFROM SalesOrder AS o\nJOIN Customer AS c ON o.CustomerId = c.CustomerId\nJOIN Product AS p ON o.ProductId = p.ProductId",
 			"metadata": {
 				"language": "sql"
 			},
