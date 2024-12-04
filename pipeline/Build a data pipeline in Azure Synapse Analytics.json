@@ -19,6 +19,12 @@
 						"referenceName": "LoadProductsData",
 						"type": "DataFlowReference"
 					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "synapse7hkutdz-WorkspaceDefaultStorage",
+							"type": "LinkedServiceReference"
+						}
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
