@@ -2,7 +2,7 @@
 	"name": "Create ProductSalesTotals table",
 	"properties": {
 		"folder": {
-			"name": "dp-203-azure-data-engineer"
+			"name": "dp-203-azure-data-engineer/Transform-data-with-sql"
 		},
 		"content": {
 			"query": "USE Sales;\nGO;\n\nCREATE EXTERNAL TABLE dbo.ProductSalesTotals\n    WITH (\n        LOCATION = 'sales/productsales/',\n        DATA_SOURCE = sales_data,\n        FILE_FORMAT = ParquetFormat\n    )\nAS\nSELECT Item AS Product,\n    SUM(Quantity) AS ItemsSold,\n    ROUND(SUM(UnitPrice) - SUM(TaxAmount), 2) AS NetRevenue\nFROM\n    OPENROWSET(\n    BULK 'https://datalake7hkutdz.dfs.core.windows.net/files/sales/csv/2021.csv',\n    FORMAT = 'CSV',\n    PARSER_VERSION = '2.0',\n    HEADER_ROW = TRUE\n    ) AS [orders]\nGROUP BY Item;",
