@@ -1,0 +1,20 @@
+{
+	"name": "CREATE TABLE DimProduct",
+	"properties": {
+		"folder": {
+			"name": "dp-203-azure-data-engineer/Load-Data-into-Data-Warehouse"
+		},
+		"content": {
+			"query": " CREATE TABLE dbo.DimProduct\n WITH\n (\n     DISTRIBUTION = HASH(ProductAltKey),\n     CLUSTERED COLUMNSTORE INDEX\n )\n AS\n SELECT ROW_NUMBER() OVER(ORDER BY ProductID) AS ProductKey,\n     ProductID AS ProductAltKey,\n     ProductName,\n     ProductCategory,\n     Color,\n     Size,\n     ListPrice,\n     Discontinued\n FROM dbo.StageProduct;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

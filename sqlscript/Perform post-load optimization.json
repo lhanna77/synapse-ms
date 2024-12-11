@@ -1,0 +1,20 @@
+{
+	"name": "Perform post-load optimization",
+	"properties": {
+		"folder": {
+			"name": "dp-203-azure-data-engineer/Load-Data-into-Data-Warehouse"
+		},
+		"content": {
+			"query": "ALTER INDEX ALL ON dbo.DimProduct REBUILD;\n\nCREATE STATISTICS customergeo_stats \nON dbo.DimCustomer (GeographyKey);",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

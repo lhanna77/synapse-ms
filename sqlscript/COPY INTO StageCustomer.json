@@ -1,0 +1,20 @@
+{
+	"name": "COPY INTO StageCustomer",
+	"properties": {
+		"folder": {
+			"name": "dp-203-azure-data-engineer/Load-Data-into-Data-Warehouse"
+		},
+		"content": {
+			"query": " COPY INTO dbo.StageCustomer\n (GeographyKey, CustomerAlternateKey, Title, FirstName, MiddleName, LastName, NameStyle, BirthDate, \n MaritalStatus, Suffix, Gender, EmailAddress, YearlyIncome, TotalChildren, NumberChildrenAtHome, EnglishEducation, \n SpanishEducation, FrenchEducation, EnglishOccupation, SpanishOccupation, FrenchOccupation, HouseOwnerFlag, \n NumberCarsOwned, AddressLine1, AddressLine2, Phone, DateFirstPurchase, CommuteDistance)\n FROM 'https://datalake7hkutdz.dfs.core.windows.net/files/09/Customer.csv'\n WITH\n (\n FILE_TYPE = 'CSV'\n ,MAXERRORS = 5\n ,FIRSTROW = 2 -- skip header row\n ,ERRORFILE = 'https://datalake7hkutdz.dfs.core.windows.net/files/'\n );",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Sales",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
